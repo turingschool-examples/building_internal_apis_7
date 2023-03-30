@@ -1,26 +1,32 @@
 class Api::V1::BooksController < ApplicationController
   def index
-    render json: Book.all
+    render json: BookSerializer.new(Book.all)
   end
 
   def show
-    render json: Book.find(params[:id])
+    render json: BookSerializer.new(Book.find(params[:id]))
   end
 
   def create
-    render json: Book.create(book_params)
+    new_book = Book.create(book_params)
+    render json: BookSerializer.new(new_book)
   end
 
   def update
-    render json: Book.update(params[:id], book_params)
+    book = Book.find(params[:id])
+    book.update(book_params)
+    render json: BookSerializer.new(book)
   end
   
   def destroy
-    render json: Book.delete(params[:id])
+    book = Book.find(params[:id])
+    book.destroy
+    render json: BookSerializer.new(book)
   end
 
   private
-    def book_params
-      params.require(:book).permit(:title, :author, :summary, :genre, :number_sold)
-    end
+
+  def book_params
+    params.require(:book).permit(:title, :author, :summary, :genre, :number_sold)
+  end
 end

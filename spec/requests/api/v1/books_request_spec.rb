@@ -8,28 +8,28 @@ describe "Books API" do
 
     expect(response).to be_successful
 
-    books = JSON.parse(response.body, symbolize_names: true)
+    books = JSON.parse(response.body, symbolize_names: true)[:data]
 
     expect(books.count).to eq(3)
 
     books.each do |book|
       expect(book).to have_key(:id)
-      expect(book[:id]).to be_an(Integer)
+      expect(book[:id]).to be_an(String)
 
-      expect(book).to have_key(:title)
-      expect(book[:title]).to be_a(String)
+      expect(book[:attributes]).to have_key(:title)
+      expect(book[:attributes][:title]).to be_a(String)
 
-      expect(book).to have_key(:author)
-      expect(book[:author]).to be_a(String)
+      expect(book[:attributes]).to have_key(:author)
+      expect(book[:attributes][:author]).to be_a(String)
 
-      expect(book).to have_key(:genre)
-      expect(book[:genre]).to be_a(String)
+      expect(book[:attributes]).to have_key(:genre)
+      expect(book[:attributes][:genre]).to be_a(String)
 
-      expect(book).to have_key(:summary)
-      expect(book[:summary]).to be_a(String)
+      expect(book[:attributes]).to have_key(:summary)
+      expect(book[:attributes][:summary]).to be_a(String)
 
-      expect(book).to have_key(:number_sold)
-      expect(book[:number_sold]).to be_an(Integer)
+      expect(book[:attributes]).to have_key(:number_sold)
+      expect(book[:attributes][:number_sold]).to be_an(Integer)
     end
   end
 
@@ -38,27 +38,24 @@ describe "Books API" do
   
     get "/api/v1/books/#{id}"
   
-    book = JSON.parse(response.body, symbolize_names: true)
+    book = JSON.parse(response.body, symbolize_names: true)[:data]
   
     expect(response).to be_successful
   
-    expect(book).to have_key(:id)
-    expect(book[:id]).to eq(id)
+    expect(book[:attributes]).to have_key(:title)
+    expect(book[:attributes][:title]).to be_a(String)
   
-    expect(book).to have_key(:title)
-    expect(book[:title]).to be_a(String)
+    expect(book[:attributes]).to have_key(:author)
+    expect(book[:attributes][:author]).to be_a(String)
   
-    expect(book).to have_key(:author)
-    expect(book[:author]).to be_a(String)
+    expect(book[:attributes]).to have_key(:genre)
+    expect(book[:attributes][:genre]).to be_a(String)
   
-    expect(book).to have_key(:genre)
-    expect(book[:genre]).to be_a(String)
+    expect(book[:attributes]).to have_key(:summary)
+    expect(book[:attributes][:summary]).to be_a(String)
   
-    expect(book).to have_key(:summary)
-    expect(book[:summary]).to be_a(String)
-  
-    expect(book).to have_key(:number_sold)
-    expect(book[:number_sold]).to be_an(Integer)
+    expect(book[:attributes]).to have_key(:number_sold)
+    expect(book[:attributes][:number_sold]).to be_an(Integer)
   end
   
   it "can create a new book" do
@@ -116,7 +113,21 @@ describe "Books API" do
   
     expect{ delete "/api/v1/books/#{book.id}" }.to change(Book, :count).by(-1)
   
-    # expect(response).to be_success
+    expect(response).to be_successful
     expect{Book.find(book.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  # describe 'sad paths' do
+  #   it "will gracefully handle if a book id doesn't exist" do
+  #     get "/api/v1/books/1"
+
+  #     expect(response).to_not be_successful
+  #     expect(response.status).to eq(404)
+
+  #     data = JSON.parse(response.body, symbolize_names: true)
+  #     expect(data[:errors]).to be_a(Array)
+  #     expect(data[:errors].first[:status]).to eq("404")
+  #     expect(data[:errors].first[:title]).to eq("Couldn't find Book with 'id'=1")
+  #   end
+  # end
 end
