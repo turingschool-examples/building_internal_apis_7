@@ -117,17 +117,18 @@ describe "Books API" do
     expect{Book.find(book.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  # describe 'sad paths' do
-  #   it "will gracefully handle if a book id doesn't exist" do
-  #     get "/api/v1/books/1"
+  describe 'sad paths' do
+    it "will gracefully handle if a book id doesn't exist" do
+      get "/api/v1/books/1"
 
-  #     expect(response).to_not be_successful
-  #     expect(response.status).to eq(404)
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
 
-  #     data = JSON.parse(response.body, symbolize_names: true)
-  #     expect(data[:errors]).to be_a(Array)
-  #     expect(data[:errors].first[:status]).to eq("404")
-  #     expect(data[:errors].first[:title]).to eq("Couldn't find Book with 'id'=1")
-  #   end
-  # end
+      data = JSON.parse(response.body, symbolize_names: true)
+      
+      expect(data[:errors]).to be_a(Array)
+      expect(data[:errors].first[:status]).to eq("404")
+      expect(data[:errors].first[:title]).to eq("Couldn't find Book with 'id'=1")
+    end
+  end
 end
