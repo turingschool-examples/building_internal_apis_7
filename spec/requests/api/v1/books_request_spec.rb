@@ -11,7 +11,6 @@ describe "Books API" do
     books = JSON.parse(response.body, symbolize_names: true)
 
     expect(books.count).to eq(3)
-
     books.each do |book|
       expect(book).to have_key(:id)
       expect(book[:id]).to be_an(Integer)
