@@ -37,7 +37,7 @@ class Api::V1::BooksController < ApplicationController
     params.require(:book).permit(:title, :author, :summary, :genre, :number_sold)
   end
 
-  def not_found_response
+  def not_found_response(error) # rescue_from creates a "hidden" parameter (like Exception => e does manually). We access that in here as `error`, so that the `.message` property can be used.
     render json: ErrorSerializer.new(ErrorMessage.new(error.message, 404)).serialize_json, status: 404
   end
 end
