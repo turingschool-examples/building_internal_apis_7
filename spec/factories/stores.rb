@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :store do
-    name { "MyString" }
+    name { Faker::Commerce.vendor }
   end
 end
